@@ -1,0 +1,1 @@
+/home/yangbeom/.config/nvim/init.vim
