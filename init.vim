@@ -1,17 +1,20 @@
-"--------------------------------------------------------------------
-"Plugin 설정 w
+"F
+"-----------------------------------------------------------------------------
+"Plugin 설정 
 call plug#begin()
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-jedi'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
+Plug 'fcitx.vim'
+Plug 'airblade/vim-gitgutter'
 call plug#end()
 call deoplete#enable()
 "deoplete Tab으로 실행
 inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete() 
 
-"--------------------------------------------------------------------
+"-----------------------------------------------------------------------------
 syntax on " 문법강조
 
 set nu " 라인 넘버
@@ -34,8 +37,8 @@ set cc=80
 set title
 set bs=indent,eol,start
 set backspace=2
-colorscheme monokai
-"-----------------------------Key mapping--------------------------------------
+colorscheme onedark
+"-----------------------------Key mapping-------------------------------------
 " Nomal Mode Key map
 nmap <C-s> :w<CR>
 nmap <C-j> <C-w>j
@@ -49,4 +52,4 @@ imap <C-k> <Esc><C-k>
 imap <C-h> <Esc><C-h>
 imap <C-l> <Esc><C-l>
 
-let g:airline_theme='jellybeans'
+let g:airline_theme='onedark'
