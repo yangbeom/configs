@@ -1,4 +1,3 @@
-"F
 "-----------------------------------------------------------------------------
 "Plugin 설정 
 call plug#begin()
@@ -8,12 +7,24 @@ Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
 Plug 'fcitx.vim'
+Plug 'ekalinin/dockerfile.vim'
+Plug 'othree/html5.vim'
+Plug 'pangloss/vim-javascript'
 Plug 'airblade/vim-gitgutter'
 call plug#end()
 call deoplete#enable()
 "deoplete Tab으로 실행
-inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete() 
-
+"inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
+" ,<Tab> for regular tab
+"inoremap <Leader><Tab> <Space><Space><Space><Space>
+inoremap <silent><expr> <TAB>
+		\ pumvisible() ? "\<C-n>" :
+		\ <SID>check_back_space() ? "\<TAB>" :
+		\ deoplete#mappings#manual_complete()
+		function! s:check_back_space() abort "{{{
+		let col = col('.') - 1
+		return !col || getline('.')[col - 1]  =~ '\s'
+		endfunction"}}}
 "-----------------------------------------------------------------------------
 syntax on " 문법강조
 
@@ -45,11 +56,14 @@ nmap <C-j> <C-w>j
 nmap <C-k> <C-w>k
 nmap <C-h> <C-w>h
 nmap <C-l> <C-w>l
+nmap <C-n> :NERDTree<Enter>
+nmap <F8> :TagbarToggle<Enter>
 " Insert Mode Key map
 imap <C-s> <Esc><C-s>
 imap <C-j> <Esc><C-j>
 imap <C-k> <Esc><C-k>
 imap <C-h> <Esc><C-h>
 imap <C-l> <Esc><C-l>
-
+imap <C-n> <Esc><C-n>
+imap <F8> <Esc><F8>
 let g:airline_theme='onedark'
