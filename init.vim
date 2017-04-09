@@ -6,25 +6,32 @@ Plug 'zchee/deoplete-jedi'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
-Plug 'fcitx.vim'
 Plug 'ekalinin/dockerfile.vim'
 Plug 'othree/html5.vim'
-Plug 'pangloss/vim-javascript'
 Plug 'airblade/vim-gitgutter'
+Plug 'nvie/vim-flake8'
+Plug 'carlitux/deoplete-ternjs', {'do': 'npm install -g tern'}
+Plug 'jiangmiao/auto-pairs'
 call plug#end()
 call deoplete#enable()
 "deoplete Tab으로 실행
-"inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
-" ,<Tab> for regular tab
-"inoremap <Leader><Tab> <Space><Space><Space><Space>
 inoremap <silent><expr> <TAB>
-		\ pumvisible() ? "\<C-n>" :
-		\ <SID>check_back_space() ? "\<TAB>" :
-		\ deoplete#mappings#manual_complete()
-		function! s:check_back_space() abort "{{{
-		let col = col('.') - 1
-		return !col || getline('.')[col - 1]  =~ '\s'
-		endfunction"}}}
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ deoplete#mappings#manual_complete()
+        function! s:check_back_space() abort "{{{
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~ '\s'
+        endfunction"}}}
+
+inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS>  deoplete#smart_close_popup()."\<C-h>"
+
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+    function! s:my_cr_function() abort
+      return deoplete#close_popup() . "\<CR>"
+    endfunction
+
 "-----------------------------------------------------------------------------
 syntax on " 문법강조
 
@@ -43,11 +50,13 @@ set autowrite " 다른파일로 넘어갈 때 자동 저장
 set autoread " 작업중인 파일 외부에서 변경됬을 경우 자동으로 불러옴
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
 set list
-set textwidth=79
-set cc=80
+set textwidth=119
+set cc=120
 set title
 set bs=indent,eol,start
 set backspace=2
+set clipboard+=unnamedplus
+set modifiable
 colorscheme onedark
 "-----------------------------Key mapping-------------------------------------
 " Nomal Mode Key map
@@ -67,3 +76,4 @@ imap <C-l> <Esc><C-l>
 imap <C-n> <Esc><C-n>
 imap <F8> <Esc><F8>
 let g:airline_theme='onedark'
+let g:airline#extensions#tabline#enabled = 1
