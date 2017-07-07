@@ -1,5 +1,5 @@
 "-----------------------------------------------------------------------------
-"Plugin 설정 
+"Plugin 설정
 call plug#begin()
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-jedi'
@@ -12,6 +12,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'nvie/vim-flake8'
 Plug 'carlitux/deoplete-ternjs', {'do': 'npm install -g tern'}
 Plug 'jiangmiao/auto-pairs'
+Plug 'dracula/vim'
 call plug#end()
 call deoplete#enable()
 "deoplete Tab으로 실행
@@ -28,10 +29,10 @@ inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS>  deoplete#smart_close_popup()."\<C-h>"
 
 inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-    function! s:my_cr_function() abort
+   function! s:my_cr_function() abort
       return deoplete#close_popup() . "\<CR>"
     endfunction
-
+autocmd BufWritePre * :%s/\s\+$//e
 "-----------------------------------------------------------------------------
 syntax on " 문법강조
 
@@ -57,7 +58,6 @@ set bs=indent,eol,start
 set backspace=2
 set clipboard+=unnamedplus
 set modifiable
-colorscheme onedark
 "-----------------------------Key mapping-------------------------------------
 " Nomal Mode Key map
 nmap <C-s> :w<CR>
@@ -75,5 +75,6 @@ imap <C-h> <Esc><C-h>
 imap <C-l> <Esc><C-l>
 imap <C-n> <Esc><C-n>
 imap <F8> <Esc><F8>
-let g:airline_theme='onedark'
-let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='dracula'
+"let g:airline#extensions#tabline#enabled = 1
+let g:python3_host_prog = '/Users/yangbeom/.pyenv/versions/3.6.1/bin'
