@@ -76,5 +76,5 @@ imap <C-l> <Esc><C-l>
 imap <C-n> <Esc><C-n>
 imap <F8> <Esc><F8>
 let g:airline_theme='dracula'
-"let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
 let g:python3_host_prog = '/Users/yangbeom/.pyenv/versions/3.6.1/bin'
