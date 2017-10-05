@@ -51,8 +51,8 @@ set autowrite " 다른파일로 넘어갈 때 자동 저장
 set autoread " 작업중인 파일 외부에서 변경됬을 경우 자동으로 불러옴
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
 set list
-set textwidth=119
-set cc=120
+set textwidth=79
+set cc=80
 set title
 set bs=indent,eol,start
 set backspace=2
