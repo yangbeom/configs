@@ -55,18 +55,10 @@ set modifiable
 "-----------------------------Key mapping-------------------------------------
 " Nomal Mode Key map
 nmap <C-s> :w<CR>
-nmap <C-j> <C-w>j
-nmap <C-k> <C-w>k
-nmap <C-h> <C-w>h
-nmap <C-l> <C-w>l
 nmap <C-n> :NvimTreeToggle<Enter>
 nmap <F8> :TagbarToggle<Enter>
 " Insert Mode Key map
 imap <C-s> <Esc><C-s>
-imap <C-j> <Esc><C-j>
-imap <C-k> <Esc><C-k>
-imap <C-h> <Esc><C-h>
-imap <C-l> <Esc><C-l>
 imap <C-n> <Esc><C-n>
 imap <F8> <Esc><F8>
 
@@ -78,12 +70,27 @@ let g:airline#extensions#tabline#formatter = "unique_tail_improved"
 let g:airline_powerline_fonts = 1
 
 
+" vsnip config
+" Expand
+imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+" Expand or jump
+imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+" Jump forward or backward
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
 " Set completeopt to have a better completion experience
 " :help completeopt
 " menuone: popup even when there's only one match
 " noinsert: Do not insert text until a selection is made
 " noselect: Do not select, force user to select one from the menu
-set completeopt=menuone,noinsert,noselect
+set completeopt=menu,menuone,noinsert,noselect
 
 " Avoid showing extra messages when using completion
 set shortmess+=c
