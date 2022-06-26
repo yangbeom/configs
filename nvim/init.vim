@@ -108,11 +108,11 @@ set completeopt=menu,menuone,noinsert,noselect
 
 " Avoid showing extra messages when using completion
 set shortmess+=c
-lua <<EOF
-require("lua/nvim-tree-conf")
-require("lua/nvim-treesitter-conf")
-require("lua/nvim-lspconfig-conf")
-require("lua/nvim-cmp-conf")
+lua << EOF
+require("nvim-tree-conf")
+require("nvim-treesitter-conf")
+require("nvim-lspconfig-conf")
+require("nvim-cmp-conf")
 EOF
 
 " Configure LSP through rust-tools.nvim plugin.
