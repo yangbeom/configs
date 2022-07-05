@@ -43,16 +43,26 @@ set mouse=a
 "-----------------------------------------------------------------------------
 syntax on " 문법강조
 
-set nu rnu " 라인 넘버
-set smartindent " 스마트한 들여쓰기
+"set nu rnu " 라인 넘버
+lua << EOF
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.smartindent = true
+vim.o.title = true
+vim.o.smartcase = true
+vim.o.showmatch = true
+vim.o.fileencoding = "utf-8"
+EOF
+
+"set smartindent " 스마트한 들여쓰기
 set autoindent " 자동 들여쓰기
 set cindent " C프로그래밍용 자동 들여쓰기
 set ts=4 " tab stop
 set et
 set shiftwidth=4 " 자동 들여쓰기 4칸
-set showmatch " 괄호 강조
-set smartcase " 검색시 대소문자 구별
-set fileencoding=utf-8 " 파일저장 인코딩
+"set showmatch " 괄호 강조
+"set smartcase " 검색시 대소문자 구별
+"set fileencoding=utf-8 " 파일저장 인코딩
 set ruler " 커서 위치
 set autowrite " 다른파일로 넘어갈 때 자동 저장
 set autoread " 작업중인 파일 외부에서 변경됬을 경우 자동으로 불러옴
@@ -60,7 +70,7 @@ set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
 set list
 set textwidth=79
 set cc=80
-set title
+"set title
 set bs=indent,eol,start
 set backspace=2
 set clipboard+=unnamedplus
@@ -78,11 +88,11 @@ imap <F8> <Esc><F8>
 "color onedark
 color dracula
 
-let g:airline_theme='onedark'
+let g:airline_theme='deus'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = "unique_tail_improved"
 let g:airline_powerline_fonts = 1
-
+let g:rainbow_active = 1
 
 " vsnip config
 " Expand

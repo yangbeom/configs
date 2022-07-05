@@ -25,12 +25,25 @@ cmp.setup({
     })
   },
 
+  formatting = {
+      format = function(entry, vim_item)
+          vim_item.menu = ({
+              buffer = "[Buffer]",
+              nvim_lsp = "[LSP]",
+              vsnip = "[Snip]",
+              treesitter = "[Treesitter]",
+          })[entry.source.name]
+          return vim_item
+      end,
+      },
+
   -- Installed sources
   sources = {
     { name = 'nvim_lsp' },
     { name = 'vsnip' },
     { name = 'path' },
     { name = 'buffer' },
+    { name = 'treesitter' },
   },
 })
 

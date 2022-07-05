@@ -1,6 +1,9 @@
 local nvim_lsp = require'lspconfig'
 
-local opts = {
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
+require('rust-tools').setup({
     tools = { -- rust-tools options
         autoSetHints = true,
         hover_with_actions = true,
@@ -28,7 +31,7 @@ local opts = {
             }
         }
     },
-}
 
-require('rust-tools').setup(opts)
+    capabilities = capabilities,
+})
 
