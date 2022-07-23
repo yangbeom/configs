@@ -5,10 +5,15 @@ Plug 'navarasu/onedark.nvim' " onedark theme
 Plug 'Mofiqul/dracula.nvim' "dracula theme
 Plug 'airblade/vim-gitgutter' " git changeed label
 Plug 'tpope/vim-fugitive'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
+"
 Plug 'majutsushi/tagbar'
 Plug 'frazrepo/vim-rainbow'
+
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
+Plug 'williamboman/nvim-lsp-installer'
 
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua' " like nerdtree
@@ -23,10 +28,12 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/vim-vsnip'
 
 Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
 Plug 'simrat39/rust-tools.nvim'
 
 " Debugging
 Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 Plug 'mfussenegger/nvim-dap'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -54,6 +61,8 @@ vim.o.showmatch = true
 vim.o.fileencoding = "utf-8"
 EOF
 
+
+set termguicolors
 "set smartindent " 스마트한 들여쓰기
 set autoindent " 자동 들여쓰기
 set cindent " C프로그래밍용 자동 들여쓰기
@@ -88,10 +97,10 @@ imap <F8> <Esc><F8>
 "color onedark
 color dracula
 
-let g:airline_theme='deus'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = "unique_tail_improved"
-let g:airline_powerline_fonts = 1
+"let g:airline_theme='deus'
+"let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#formatter = "unique_tail_improved"
+"let g:airline_powerline_fonts = 1
 let g:rainbow_active = 1
 
 " vsnip config
@@ -123,6 +132,8 @@ require("nvim-tree-conf")
 require("nvim-treesitter-conf")
 require("nvim-lspconfig-conf")
 require("nvim-cmp-conf")
+require("nvim-lualine-conf")
+require("nvim-bufferline-conf")
 EOF
 
 " Configure LSP through rust-tools.nvim plugin.
@@ -154,5 +165,10 @@ autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 nnoremap <silent> g[ <cmd>lua vim.diagnostic.goto_prev()<CR>
 nnoremap <silent> g] <cmd>lua vim.diagnostic.goto_next()<CR>
 
+"Telescope
 
+nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
