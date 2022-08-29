@@ -84,6 +84,7 @@ set bs=indent,eol,start
 set backspace=2
 set clipboard+=unnamedplus
 set modifiable
+
 "-----------------------------Key mapping-------------------------------------
 " Nomal Mode Key map
 nmap <C-s> :w<CR>
