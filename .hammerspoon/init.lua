@@ -1,5 +1,5 @@
 function applicationWatcher(appName, event, application)
-    if application.bundleID() == "com.github.wez.wezterm" then -- WezTerm 일경우 esc 누를 때 영문으로 변경
+    if application:bundleID() == "com.github.wez.wezterm" then -- WezTerm 일경우 esc 누를 때 영문으로 변경
         if event == hs.application.watcher.activated then
             --창이 활성화 일때 esc 누르면 change_input_english 수행
             hs.hotkey.bind({}, "escape", change_input_english)
