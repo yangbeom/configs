@@ -13,7 +13,6 @@ Plug 'frazrepo/vim-rainbow'
 
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
-Plug 'williamboman/nvim-lsp-installer'
 
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua' " like nerdtree
@@ -28,8 +27,9 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/vim-vsnip'
 
 Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/nvim-lsp-installer'
 Plug 'simrat39/rust-tools.nvim'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 
 " Debugging
 Plug 'nvim-lua/plenary.nvim'
@@ -38,6 +38,7 @@ Plug 'mfussenegger/nvim-dap'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+
 call plug#end()
 
 autocmd BufWritePre * :%s/\s\+$//e
@@ -46,7 +47,7 @@ autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 200)
 autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
 autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty-tags.vi
 autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
-set mouse=a
+set mouse=
 "-----------------------------------------------------------------------------
 syntax on " 문법강조
 
@@ -60,7 +61,6 @@ vim.o.smartcase = true
 vim.o.showmatch = true
 vim.o.fileencoding = "utf-8"
 EOF
-
 
 set termguicolors
 "set smartindent " 스마트한 들여쓰기
@@ -135,6 +135,7 @@ require("nvim-lspconfig-conf")
 require("nvim-cmp-conf")
 require("nvim-lualine-conf")
 require("nvim-bufferline-conf")
+require("mason-conf")
 EOF
 
 " Configure LSP through rust-tools.nvim plugin.
@@ -172,4 +173,6 @@ nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+
+set rtp+=/opt/homebrew/opt/fzf
 
