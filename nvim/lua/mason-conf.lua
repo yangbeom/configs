@@ -6,10 +6,10 @@ require("mason").setup {
     }
 }
 require("mason-lspconfig").setup {
-    ensure_installed = { "sumneko_lua" },
+    ensure_installed = { "lua_ls" },
 }
 local lspconfig = require("lspconfig")
-lspconfig.sumneko_lua.setup {}
+lspconfig.lua_ls.setup {}
 lspconfig.rust_analyzer.setup {}
 require("mason-lspconfig").setup_handlers({
     -- The first entry (without a key) will be the default handler
@@ -20,17 +20,10 @@ require("mason-lspconfig").setup_handlers({
     end,
     -- Next, you can provide targeted overrides for specific servers.
     ["rust_analyzer"] = function ()
-        require("rust-tools").setup {}
-    end,
-    ["sumneko_lua"] = function ()
-        lspconfig.sumneko_lua.setup {
-            settings = {
-                Lua = {
-                    diagnostics = {
-                        globals = { "vim" }
-                    }
-                }
-            }
+        require("rust-tools").setup {
+        checkOnSave = {
+            command = "clippy"
+        },
         }
     end,
 })

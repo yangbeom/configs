@@ -5,9 +5,7 @@ Plug 'navarasu/onedark.nvim' " onedark theme
 Plug 'Mofiqul/dracula.nvim' "dracula theme
 Plug 'airblade/vim-gitgutter' " git changeed label
 Plug 'tpope/vim-fugitive'
-"Plug 'vim-airline/vim-airline'
-"Plug 'vim-airline/vim-airline-themes'
-"
+
 Plug 'majutsushi/tagbar'
 Plug 'frazrepo/vim-rainbow'
 
@@ -41,49 +39,59 @@ Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
-autocmd BufWritePre * :%s/\s\+$//e
-autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
-autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 200)
-autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty-tags.vi
-autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
-set mouse=
 "-----------------------------------------------------------------------------
-syntax on " 문법강조
-
-"set nu rnu " 라인 넘버
 lua << EOF
+vim.api.nvim_create_autocmd('BufWritePre', {
+	  pattern = '',
+  command = ":%s/\\s\\+$//e"
+})
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+	pattern = "*.rs",
+	command = "lua vim.lsp.buf.formatting_sync(nil, 200)"
+})
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+	pattern = "*.rs",
+	command = ":setlocal tags=./rusty-tags.vi;/$RUST_SRC_PATH/rusty-tags.vi"
+})
+vim.api.nvim_create_autocmd('BufWritePost', {
+	pattern = "*.rs",
+	command = ':silent! exec "!rusty-tags vi --quiet --start-dir=" . expand(\'%:p:h\') . "&" | redraw!'
+})
+
+vim.o.syntax = true
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.smartindent = true
+vim.o.autoindent = true
+vim.o.autoread = true
 vim.o.title = true
 vim.o.smartcase = true
 vim.o.showmatch = true
 vim.o.fileencoding = "utf-8"
+vim.o.termguicolors = true
+vim.o.clipboard = "unnamedplus"
+vim.wo.signcolumn = "yes"
+vim.o.textwidth = 119
+vim.o.colorcolumn = "120"
+vim.o.tabstop = 4
+vim.o.swapfile = false
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
+--vim.o.ruler = true
+vim.o.listchars = "eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·"
+vim.o.list = true
+
+require("nvim-tree-conf")
+require("nvim-treesitter-conf")
+require("nvim-lspconfig-conf")
+require("nvim-cmp-conf")
+require("nvim-lualine-conf")
+require("nvim-bufferline-conf")
+require("mason-conf")
 EOF
 
-set termguicolors
-"set smartindent " 스마트한 들여쓰기
-set autoindent " 자동 들여쓰기
-set cindent " C프로그래밍용 자동 들여쓰기
-set ts=4 " tab stop
-set et
-set shiftwidth=4 " 자동 들여쓰기 4칸
-"set showmatch " 괄호 강조
-"set smartcase " 검색시 대소문자 구별
-"set fileencoding=utf-8 " 파일저장 인코딩
-set ruler " 커서 위치
-set autowrite " 다른파일로 넘어갈 때 자동 저장
-set autoread " 작업중인 파일 외부에서 변경됬을 경우 자동으로 불러옴
-set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
-set list
-set textwidth=79
-set cc=80
-"set title
-set bs=indent,eol,start
-set backspace=2
-set clipboard+=unnamedplus
-set modifiable
 
 "-----------------------------Key mapping-------------------------------------
 " Nomal Mode Key map
@@ -98,10 +106,6 @@ imap <F8> <Esc><F8>
 "color onedark
 color dracula
 
-"let g:airline_theme='deus'
-"let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#tabline#formatter = "unique_tail_improved"
-"let g:airline_powerline_fonts = 1
 let g:rainbow_active = 1
 
 " vsnip config
@@ -128,15 +132,6 @@ set completeopt=menu,menuone,noinsert,noselect
 
 " Avoid showing extra messages when using completion
 set shortmess+=c
-lua << EOF
-require("nvim-tree-conf")
-require("nvim-treesitter-conf")
-require("nvim-lspconfig-conf")
-require("nvim-cmp-conf")
-require("nvim-lualine-conf")
-require("nvim-bufferline-conf")
-require("mason-conf")
-EOF
 
 " Configure LSP through rust-tools.nvim plugin.
 " rust-tools will configure and enable certain LSP features for us.
@@ -155,7 +150,6 @@ nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
 
 
-set signcolumn=yes
 
 " Set updatetime for CursorHold
 " 300ms of no cursor movement to trigger CursorHold
@@ -168,7 +162,6 @@ nnoremap <silent> g[ <cmd>lua vim.diagnostic.goto_prev()<CR>
 nnoremap <silent> g] <cmd>lua vim.diagnostic.goto_next()<CR>
 
 "Telescope
-
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
