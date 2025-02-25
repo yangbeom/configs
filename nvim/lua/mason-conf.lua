@@ -6,7 +6,7 @@ require("mason").setup {
     }
 }
 require("mason-lspconfig").setup {
-    ensure_installed = { "lua_ls" },
+    ensure_installed = { "lua_ls", "rust_analyzer" },
 }
 local nvim_lsp = require("lspconfig")
 nvim_lsp.lua_ls.setup {}
@@ -57,9 +57,15 @@ require("mason-lspconfig").setup_handlers({
     -- Next, you can provide targeted overrides for specific servers.
     ["rust_analyzer"] = function ()
         require("rust-tools").setup {
+        on_attach = on_attach,
         checkOnSave = {
             command = "clippy"
         },
+        inlay_hints = {
+            show_parameter_hints = true,
+            parameter_hints_prefix = " ",
+            other_hints_prefix = " ",
         }
+    }
     end,
 })

@@ -126,3 +126,5 @@ set rtp+=/opt/homebrew/opt/fzf
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 export LDFLAGS="-L/opt/homebrew/opt/mysql-client/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/mysql-client/include"
+bindkey "^[b" backward-word  # Option+←
+bindkey "^[f" forward-word   # Option+→
