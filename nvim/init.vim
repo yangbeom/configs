@@ -1,4 +1,3 @@
-"-----------------------------------------------------------------------------
 "Plugin 설정
 call plug#begin()
 Plug 'navarasu/onedark.nvim' " onedark theme
@@ -10,7 +9,7 @@ Plug 'majutsushi/tagbar'
 Plug 'frazrepo/vim-rainbow'
 
 Plug 'nvim-lualine/lualine.nvim'
-Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
+Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
 
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua' " like nerdtree
@@ -37,6 +36,8 @@ Plug 'mfussenegger/nvim-dap'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+Plug 'github/copilot.vim'
+
 call plug#end()
 
 "-----------------------------------------------------------------------------
@@ -60,8 +61,8 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 	command = ':silent! exec "!rusty-tags vi --quiet --start-dir=" . expand(\'%:p:h\') . "&" | redraw!'
 })
 
-vim.o.syntax = true
-vim.o.number = true
+vim.o.syntax = "on"
+vim.o.number = ture
 vim.o.relativenumber = true
 vim.o.smartindent = true
 vim.o.autoindent = true
@@ -75,11 +76,12 @@ vim.o.clipboard = "unnamedplus"
 vim.wo.signcolumn = "yes"
 vim.o.textwidth = 119
 vim.o.colorcolumn = "120"
+vim.o.expandtab = true
 vim.o.tabstop = 4
 vim.o.swapfile = false
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
---vim.o.ruler = true
+vim.o.ruler = true
 vim.o.listchars = "eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·"
 vim.o.list = true
 
@@ -136,20 +138,21 @@ set shortmess+=c
 " Configure LSP through rust-tools.nvim plugin.
 " rust-tools will configure and enable certain LSP features for us.
 " See https://github.com/simrat39/rust-tools.nvim#configuration
-nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
+" nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+" nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+" nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+" nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+" nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+" nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+" nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+" nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+" nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
 
 " Quick-fix
-nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
+" nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
 
-
+let g:copilot_no_tab_map = v:true
+imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
 
 " Set updatetime for CursorHold
 " 300ms of no cursor movement to trigger CursorHold
