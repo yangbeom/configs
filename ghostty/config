@@ -1,0 +1,15 @@
+theme = Dracula
+background-opacity = 0.8
+background-blur-radius = 10
+font-size = 16
+shell-integration = zsh
+scrollback-limit = 50000
+
+
+# Command + Left/Right: 줄 시작/끝
+keybind = super+left=text:\x1bOH
+keybind = super+right=text:\x1bOF
+
+# Option + Left/Right: 단어 단위 이동
+keybind = alt+left=text:\x1bb
+keybind = alt+right=text:\x1bf
