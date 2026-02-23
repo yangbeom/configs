@@ -1,9 +1,39 @@
-theme = Dracula
-background-opacity = 0.8
+#background-opacity = 0.8
 background-blur-radius = 10
+#font-family = "D2Coding ligature"
+font-family = "Monoplex KR Nerd"
+font-family = "Sarasa Term K"
 font-size = 16
 shell-integration = zsh
 scrollback-limit = 50000
+
+# Tmux-matched palette (TokyoNight-like base + palace accents)
+background = #1f2335
+foreground = #c0caf5
+cursor-color = #d5b26f
+cursor-text = #1a1b26
+selection-background = #2a3048
+selection-foreground = #c0caf5
+split-divider-color = #3b4261
+unfocused-split-fill = #161a27
+unfocused-split-opacity = 0.78
+
+palette = 0=#1f2335
+palette = 1=#b35b54
+palette = 2=#6ea08b
+palette = 3=#d5b26f
+palette = 4=#7d8fb0
+palette = 5=#a58cbc
+palette = 6=#7fa9b0
+palette = 7=#a9b1d6
+palette = 8=#565f89
+palette = 9=#c16a63
+palette = 10=#80b69e
+palette = 11=#e1c287
+palette = 12=#9aa5ce
+palette = 13=#b8a6cf
+palette = 14=#95c0c7
+palette = 15=#c0caf5
 
 
 # Command + Left/Right: 줄 시작/끝

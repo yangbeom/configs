@@ -17,7 +17,10 @@ vim.opt.fileencoding = "utf-8"
 vim.opt.termguicolors = true
 vim.opt.clipboard = "unnamedplus"
 vim.wo.signcolumn = "yes"
-vim.opt.textwidth = 119
+vim.opt.textwidth = 0
+vim.opt.wrap = false
+vim.opt.formatoptions:remove("t")
+vim.opt.formatoptions:append("cro")
 vim.opt.colorcolumn = "120"
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
