@@ -18,7 +18,8 @@ vim.opt.termguicolors = true
 vim.opt.clipboard = "unnamedplus"
 vim.wo.signcolumn = "yes"
 vim.opt.textwidth = 0
-vim.opt.wrap = false
+vim.opt.wrap = true
+vim.opt.linebreak = true
 vim.opt.formatoptions:remove("t")
 vim.opt.formatoptions:append("cro")
 vim.opt.colorcolumn = "120"
@@ -29,7 +30,8 @@ vim.opt.shiftwidth = 4
 vim.opt.ruler = true
 vim.opt.listchars = "eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·"
 vim.opt.list = true
-vim.opt.updatetime = 300
+-- Lower this so CursorHold-based checktime reacts faster to external edits.
+vim.opt.updatetime = 120
 
 -- Autocommands
 local autocmd = vim.api.nvim_create_autocmd
