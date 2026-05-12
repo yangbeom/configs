@@ -76,12 +76,31 @@ if ok_nvimtree then
     nvimtree.setup()
 end
 
--- Treesitter
-local ok_ts, ts_configs = pcall(require, "nvim-treesitter.configs")
-if ok_ts then
-    ts_configs.setup({
-        highlight = { enable = true },
-        rainbow = { enable = true },
+-- Native treesitter highlighting (Neovim 0.12)
+local treesitter_group = vim.api.nvim_create_augroup('NativeTreesitter', { clear = true })
+vim.api.nvim_create_autocmd('FileType', {
+    group = treesitter_group,
+    callback = function(args)
+        local filetype = vim.bo[args.buf].filetype
+        local lang = vim.treesitter.language.get_lang(filetype)
+        if not lang then
+            return
+        end
+
+        local ok = vim.treesitter.language.add(lang)
+        if ok then
+            pcall(vim.treesitter.start, args.buf, lang)
+        end
+    end,
+})
+
+-- nvim-autopairs
+local ok_autopairs, autopairs = pcall(require, "nvim-autopairs")
+if ok_autopairs then
+    autopairs.setup({
+        check_ts = true,
+        map_bs = true,
+        map_cr = true,
     })
 end
 
@@ -202,4 +221,9 @@ if ok_cmp then
             end, { "i", "s" }),
         }),
     })
+
+    local ok_cmp_autopairs, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
+    if ok_cmp_autopairs then
+        cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    end
 end

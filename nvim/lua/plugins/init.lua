@@ -1,132 +1,259 @@
 -- plugins/init.lua
--- Plugin configurations for native package manager
--- Plugins are installed in: ~/.local/share/nvim/site/pack/plugins/start/
+-- Plugin declarations and user commands backed by vim.pack
 
 local M = {}
 
--- Pack path for native package manager
-M.pack_path = vim.fn.stdpath("data") .. "/site/pack/plugins/start"
+local function gh(repo)
+    return "https://github.com/" .. repo
+end
 
--- Plugin list with git URLs
+M.legacy_pack_root = vim.fn.stdpath("data") .. "/site/pack/plugins"
+M.pack_root = vim.fn.stdpath("data") .. "/site/pack/core/opt"
+M.lockfile = vim.fs.joinpath(vim.fn.stdpath("config"), "nvim-pack-lock.json")
+
 M.plugins = {
     -- Theme
-    { name = "dracula.nvim", url = "https://github.com/Mofiqul/dracula.nvim" },
+    { name = "dracula.nvim", src = gh("Mofiqul/dracula.nvim") },
 
     -- Git
-    { name = "vim-gitgutter", url = "https://github.com/airblade/vim-gitgutter" },
-    { name = "vim-fugitive", url = "https://github.com/tpope/vim-fugitive" },
+    { name = "vim-gitgutter", src = gh("airblade/vim-gitgutter") },
+    { name = "vim-fugitive", src = gh("tpope/vim-fugitive") },
 
     -- UI Components
-    { name = "vim-rainbow", url = "https://github.com/frazrepo/vim-rainbow" },
-    { name = "lualine.nvim", url = "https://github.com/nvim-lualine/lualine.nvim" },
-    { name = "bufferline.nvim", url = "https://github.com/akinsho/bufferline.nvim" },
-    { name = "nvim-web-devicons", url = "https://github.com/nvim-tree/nvim-web-devicons" },
+    { name = "vim-rainbow", src = gh("frazrepo/vim-rainbow") },
+    { name = "lualine.nvim", src = gh("nvim-lualine/lualine.nvim") },
+    { name = "bufferline.nvim", src = gh("akinsho/bufferline.nvim") },
+    { name = "nvim-web-devicons", src = gh("nvim-tree/nvim-web-devicons") },
 
     -- File Explorer
-    { name = "nvim-tree.lua", url = "https://github.com/nvim-tree/nvim-tree.lua" },
-
-    -- Treesitter
-    { name = "nvim-treesitter", url = "https://github.com/nvim-treesitter/nvim-treesitter" },
+    { name = "nvim-tree.lua", src = gh("nvim-tree/nvim-tree.lua") },
 
     -- LSP & Completion
-    { name = "mason.nvim", url = "https://github.com/williamboman/mason.nvim" },
-    { name = "nvim-cmp", url = "https://github.com/hrsh7th/nvim-cmp" },
-    { name = "cmp-nvim-lsp", url = "https://github.com/hrsh7th/cmp-nvim-lsp" },
-    { name = "cmp-buffer", url = "https://github.com/hrsh7th/cmp-buffer" },
-    { name = "cmp-path", url = "https://github.com/hrsh7th/cmp-path" },
-    { name = "cmp-vsnip", url = "https://github.com/hrsh7th/cmp-vsnip" },
-    { name = "vim-vsnip", url = "https://github.com/hrsh7th/vim-vsnip" },
+    { name = "mason.nvim", src = gh("williamboman/mason.nvim") },
+    { name = "nvim-cmp", src = gh("hrsh7th/nvim-cmp") },
+    { name = "nvim-autopairs", src = gh("windwp/nvim-autopairs") },
+    { name = "cmp-nvim-lsp", src = gh("hrsh7th/cmp-nvim-lsp") },
+    { name = "cmp-buffer", src = gh("hrsh7th/cmp-buffer") },
+    { name = "cmp-path", src = gh("hrsh7th/cmp-path") },
+    { name = "cmp-vsnip", src = gh("hrsh7th/cmp-vsnip") },
+    { name = "vim-vsnip", src = gh("hrsh7th/vim-vsnip") },
 
     -- Telescope & Dependencies
-    { name = "plenary.nvim", url = "https://github.com/nvim-lua/plenary.nvim" },
-    { name = "telescope.nvim", url = "https://github.com/nvim-telescope/telescope.nvim" },
+    { name = "plenary.nvim", src = gh("nvim-lua/plenary.nvim") },
+    { name = "telescope.nvim", src = gh("nvim-telescope/telescope.nvim") },
 
     -- Debugging
-    { name = "nvim-dap", url = "https://github.com/mfussenegger/nvim-dap" },
+    { name = "nvim-dap", src = gh("mfussenegger/nvim-dap") },
 
     -- FZF
-    { name = "fzf", url = "https://github.com/junegunn/fzf" },
-    { name = "fzf.vim", url = "https://github.com/junegunn/fzf.vim" },
+    { name = "fzf", src = gh("junegunn/fzf") },
+    { name = "fzf.vim", src = gh("junegunn/fzf.vim") },
 }
 
--- Check if plugin is installed
-function M.is_installed(name)
-    return vim.fn.isdirectory(M.pack_path .. "/" .. name) == 1
+local function deepcopy_specs(specs)
+    return vim.tbl_map(function(spec)
+        return vim.deepcopy(spec)
+    end, specs)
 end
 
--- Install a single plugin
-function M.install(plugin)
-    if M.is_installed(plugin.name) then
-        return false
+local function configured_names()
+    local names = {}
+    for _, spec in ipairs(M.plugins) do
+        table.insert(names, spec.name)
     end
-    vim.fn.mkdir(M.pack_path, "p")
-    local cmd = string.format("git clone --depth 1 %s %s/%s", plugin.url, M.pack_path, plugin.name)
-    print("Installing " .. plugin.name .. "...")
-    vim.fn.system(cmd)
-    return true
+    table.sort(names)
+    return names
 end
 
--- Install all plugins
-function M.install_all()
-    local installed = 0
-    for _, plugin in ipairs(M.plugins) do
-        if M.install(plugin) then
-            installed = installed + 1
+local function filtered_specs(names)
+    if not names or vim.tbl_isempty(names) then
+        return deepcopy_specs(M.plugins), {}
+    end
+
+    local wanted = {}
+    local missing = {}
+    local specs = {}
+
+    for _, name in ipairs(names) do
+        wanted[name] = true
+    end
+
+    for _, spec in ipairs(M.plugins) do
+        if wanted[spec.name] then
+            table.insert(specs, vim.deepcopy(spec))
+            wanted[spec.name] = nil
         end
     end
-    if installed > 0 then
-        print(string.format("Installed %d plugins. Please restart Neovim.", installed))
-    else
-        print("All plugins already installed.")
+
+    for name in pairs(wanted) do
+        table.insert(missing, name)
     end
+
+    table.sort(missing)
+
+    return specs, missing
 end
 
--- Update all plugins
-function M.update_all()
-    for _, plugin in ipairs(M.plugins) do
-        local path = M.pack_path .. "/" .. plugin.name
-        if vim.fn.isdirectory(path) == 1 then
-            print("Updating " .. plugin.name .. "...")
-            vim.fn.system("git -C " .. path .. " pull")
+local function merged_plugin_names()
+    local names = {}
+
+    for _, name in ipairs(configured_names()) do
+        names[name] = true
+    end
+
+    for _, plugin in ipairs(vim.pack.get(nil, { info = false })) do
+        names[plugin.spec.name] = true
+    end
+
+    local all = {}
+    for name in pairs(names) do
+        table.insert(all, name)
+    end
+    table.sort(all)
+
+    return all
+end
+
+local function complete_plugin_names(arg_lead)
+    local matches = {}
+    for _, name in ipairs(merged_plugin_names()) do
+        if name:find("^" .. vim.pesc(arg_lead)) then
+            table.insert(matches, name)
         end
     end
-    print("Update complete. Please restart Neovim.")
+    return matches
 end
 
--- Clean removed plugins
+local function normalize_names(names)
+    if not names or vim.tbl_isempty(names) then
+        return nil
+    end
+    return names
+end
+
+local function notify_missing(names)
+    if not names or vim.tbl_isempty(names) then
+        return
+    end
+
+    vim.notify(
+        "Unknown plugin name(s): " .. table.concat(names, ", "),
+        vim.log.levels.ERROR
+    )
+end
+
+function M.add(names, opts)
+    local specs, missing = filtered_specs(names)
+    notify_missing(missing)
+    if vim.tbl_isempty(specs) then
+        return
+    end
+
+    local add_opts = vim.tbl_extend("force", {
+        confirm = false,
+    }, opts or {})
+
+    vim.pack.add(specs, add_opts)
+end
+
+function M.update(names, opts)
+    vim.pack.update(normalize_names(names), opts)
+end
+
+function M.status(names)
+    vim.pack.update(normalize_names(names), { offline = true })
+end
+
 function M.clean()
-    local installed = vim.fn.glob(M.pack_path .. "/*", false, true)
-    local plugin_names = {}
-    for _, p in ipairs(M.plugins) do
-        plugin_names[p.name] = true
-    end
-    for _, path in ipairs(installed) do
-        local name = vim.fn.fnamemodify(path, ":t")
-        if not plugin_names[name] then
-            print("Removing " .. name .. "...")
-            vim.fn.delete(path, "rf")
+    local inactive = {}
+
+    for _, plugin in ipairs(vim.pack.get(nil, { info = false })) do
+        if not plugin.active then
+            table.insert(inactive, plugin.spec.name)
         end
     end
-    print("Clean complete.")
-end
 
--- Commands
-vim.api.nvim_create_user_command("PlugInstall", function() M.install_all() end, {})
-vim.api.nvim_create_user_command("PlugUpdate", function() M.update_all() end, {})
-vim.api.nvim_create_user_command("PlugClean", function() M.clean() end, {})
-
--- Auto-install on first run
-local missing = false
-for _, plugin in ipairs(M.plugins) do
-    if not M.is_installed(plugin.name) then
-        missing = true
-        break
+    if vim.tbl_isempty(inactive) then
+        vim.notify("No inactive vim.pack plugins to remove.")
+        return
     end
+
+    table.sort(inactive)
+    vim.pack.del(inactive)
+    vim.notify("Removed inactive vim.pack plugins: " .. table.concat(inactive, ", "))
 end
-if missing then
-    vim.defer_fn(function()
-        M.install_all()
-    end, 100)
+
+function M.clean_legacy()
+    if vim.fn.isdirectory(M.legacy_pack_root) == 0 then
+        vim.notify("Legacy package directory not found: " .. M.legacy_pack_root)
+        return
+    end
+
+    vim.fn.delete(M.legacy_pack_root, "rf")
+    vim.notify("Removed legacy package directory: " .. M.legacy_pack_root)
+end
+
+local function create_commands()
+    vim.api.nvim_create_user_command("PackInstall", function(args)
+        M.add(args.fargs)
+    end, {
+        nargs = "*",
+        complete = complete_plugin_names,
+    })
+
+    vim.api.nvim_create_user_command("PackUpdate", function(args)
+        M.update(args.fargs, { force = args.bang })
+    end, {
+        nargs = "*",
+        bang = true,
+        complete = complete_plugin_names,
+    })
+
+    vim.api.nvim_create_user_command("PackStatus", function(args)
+        M.status(args.fargs)
+    end, {
+        nargs = "*",
+        complete = complete_plugin_names,
+    })
+
+    vim.api.nvim_create_user_command("PackClean", function()
+        M.clean()
+    end, {})
+
+    vim.api.nvim_create_user_command("PackCleanLegacy", function()
+        M.clean_legacy()
+    end, {})
+
+    vim.api.nvim_create_user_command("PlugInstall", function(args)
+        M.add(args.fargs)
+    end, {
+        nargs = "*",
+        complete = complete_plugin_names,
+    })
+
+    vim.api.nvim_create_user_command("PlugUpdate", function(args)
+        M.update(args.fargs, { force = args.bang })
+    end, {
+        nargs = "*",
+        bang = true,
+        complete = complete_plugin_names,
+    })
+
+    vim.api.nvim_create_user_command("PlugClean", function()
+        M.clean()
+    end, {})
+end
+
+create_commands()
+M.add()
+
+if vim.fn.isdirectory(M.legacy_pack_root) == 1 then
+    vim.schedule(function()
+        vim.notify(
+            "Legacy plugins still exist at " .. M.legacy_pack_root .. ". Run :PackCleanLegacy after verifying vim.pack startup.",
+            vim.log.levels.WARN
+        )
+    end)
 end
 
 return M
